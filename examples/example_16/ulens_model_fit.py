@@ -1075,7 +1075,11 @@ class UlensModelFit(object):
         """
         Check if enetered epochs and in the time range.
         """
-        pass
+        t0, t1 = self._plots['trajectory']['time range']
+        for epoch in self._plots['trajectory']['caustic epochs']:
+            if epoch < t0 or epoch > t1:
+                raise ValueError(
+                    'Epoch: {:} out of time range bounds'.format(epoch))
 
     def _check_plots_parameters_trajectory_interactive(self):
         """
