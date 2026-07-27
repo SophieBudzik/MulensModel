@@ -46,5 +46,3 @@ plots:
         file: LO0000-1_kb190967_Jun25_trajectory.png
         time range: 2458600 2458675
         caustic epochs: [2458610, 2458650]
-
-
