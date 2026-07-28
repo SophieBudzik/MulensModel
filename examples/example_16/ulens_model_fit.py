@@ -398,8 +398,8 @@ class UlensModelFit(object):
             2) for ``triangle`` and ``trace``:
             ``'file'``, and ``'shift t_0'`` (*bool*, *True* is default)
             3) for ``trajectory``:
-            ``'file'``, ``'interactive'``, and ``'time range'`` (if not provided, then values
-            from ``best model`` will be used)
+            ``'file'``, ``'interactive'``, ``'time range'`` (if not provided, then values
+            from ``best model`` will be used) and ``'caustic epochs'``
             e.g.:
 
             .. code-block:: python
@@ -414,6 +414,7 @@ class UlensModelFit(object):
                       'file': 'my_trajectory.png'
                       'time range': 2456050. 2456300.
                       'interactive': 'my_trajectory.html'
+                      'caustic epochs': '[2456150., 2456250.]'
                   'best model':
                       'file': 'my_fit_best.png'
                       'interactive': 'my_fit_best.html'

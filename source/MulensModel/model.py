@@ -499,6 +499,11 @@ class Model(object):
                 plotting features, e.g. color, use :py:func:`plot_caustics()`
                 instead.
 
+            caustic_epochs: *list*
+                May be used to plot multiple caustics for specified epochs.
+                Will not plot the caustic for the default epoch only the
+                ones in the list.
+
             arrow: *boolean*
                 Show the direction of the source motion. Default is *True*.
 
