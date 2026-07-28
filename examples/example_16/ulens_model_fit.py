@@ -4885,7 +4885,7 @@ class UlensModelFit(object):
         kwargs = {'caustics': True, 't_range': t_range}
         if self._multiple_caustics:
             caustic_epochs = self._plots['trajectory']['caustic epochs']
-            kwargs.update({'caustic_epochs': caustic_epochs})
+            kwargs.update({'caustic_epochs': caustic_epochs, 'color': 'navy'})
 
         self._model.plot_trajectory(**kwargs)
 

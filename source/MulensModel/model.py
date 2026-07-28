@@ -538,7 +538,6 @@ class Model(object):
         They have slightly different behavior.
 
         """
-        kwargs = {'color': 'deepskyblue'}
         if not arrow and arrow_kwargs is not None:
             raise ValueError(
                 "arrow_kwargs can be only given if arrow is True")
