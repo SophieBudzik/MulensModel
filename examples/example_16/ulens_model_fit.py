@@ -15,8 +15,6 @@ import shlex
 from scipy.interpolate import interp1d
 from matplotlib import pyplot as plt
 from matplotlib import gridspec, rcParams, rcParamsDefault, colors
-from astropy import units as u
-from astropy.coordinates import SkyCoord
 # from matplotlib.backends.backend_pdf import PdfPages
 
 import_failed = set()
@@ -3066,7 +3064,7 @@ class UlensModelFit(object):
         if self._model_parameters['theta star calculation']['relation'] == 'Adams+18':
             theta_star_flux = self._get_theta_star_Adams18()
         elif self._model_parameters['theta star calculation']['relation'] == 'Red Clump':
-            theta_star_flux = self._get_theta_star_RC()   
+            theta_star_flux = self._get_theta_star_RC()
         else:
             raise ValueError("Currently only Adams+18 accepted in 'theta star calculation' -> 'relation'")
 
@@ -3089,8 +3087,8 @@ class UlensModelFit(object):
         to the radius of the star from the Red Clump.
         """
         I_RC_0 = self._get_magnitude_RC_0()
-        source = 19.366038 # function to calculate
-        theta_RC = 6.5 # micro arcsecond
+        source = 19.366038  # function to calculate
+        theta_RC = 6.5  # micro arcsecond
 
         delta_mag = source - I_RC_0 + self._model_parameters['theta star calculation'][self._extinction_label]
         F_source_F_RC = mm.Utils.get_flux_from_mag(delta_mag)
@@ -3098,23 +3096,16 @@ class UlensModelFit(object):
 
         return theta_star*0.001
 
-    def _get_Galactic_longitude(self):
-        """
-        Returns the galactic longitude of the event.
-        """
-        c = SkyCoord(self._model_parameters['coords'], unit=(u.hourangle, u.deg))
-        return c.galactic.l.degree
-
     def _get_magnitude_RC_0(self):
         """
         Gives dereddened magnitude of the RC.
         Based on the Nataf el al. 2013 Table 1
         """
-        l_event = self._get_Galactic_longitude()
+        l_event = self._model.coords.galactic_l.degree
         l_Nataf = np.arange(-9, 12, 1)
         I_RC_0_Nataf = [14.662, 14.624, 14.620, 14.619, 14.616, 14.605, 14.589, 14.554,
                         14.503, 14.443, 14.396, 14.373, 14.350, 14.329, 14.303, 14.277,
-                                                14.245, 14.210, 14.177, 14.147, 14.121]
+                        14.245, 14.210, 14.177, 14.147, 14.121]
         I_RC_0_event = np.interp(l_event, l_Nataf, I_RC_0_Nataf)
         return I_RC_0_event
 
@@ -3173,7 +3164,7 @@ class UlensModelFit(object):
         ref_color = ref_stars[self._ref_color]
         out = ref_color['c0'] + ref_color['c1']*x
         return out
-    
+
     def _get_theta_E(self):
         """
         Calculates theta_E from third Kepler law.
