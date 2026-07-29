@@ -1504,7 +1504,7 @@ class UlensModelFit(object):
                 raise KeyError("No dataset of this name: {:}".format(value))
         if self._model_parameters['theta star calculation']['relation'] == 'Red Clump':
             if 'coords' not in self._model_parameters:
-                raise ValueError("Theta star calculation relation = Red Clump requires model['coords'].") 
+                raise ValueError("Theta star calculation relation = Red Clump requires model['coords'].")
 
     def _check_ulens_model_parameters(self):
         """
@@ -3096,7 +3096,7 @@ class UlensModelFit(object):
         source = self._get_mag_from_fluxes()[1]
         theta_RC = 6.0  # micro arcsecond at 8.3 kpc
         delta_mag = source - I_RC_0 - self._model_parameters['theta star calculation'][self._extinction_label]
-        F_source_F_RC =  10 **(-delta_mag/2.5)
+        F_source_F_RC = 10**(-delta_mag/2.5)
         theta_star = np.sqrt(F_source_F_RC)*theta_RC
         return theta_star*0.001
 
