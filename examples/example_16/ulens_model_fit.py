@@ -3072,7 +3072,7 @@ class UlensModelFit(object):
         elif self._model_parameters['theta star calculation']['relation'] == 'Red Clump':
             theta_star_flux = self._get_theta_star_RC()
         else:
-            raise ValueError("Currently only Adams+18 accepted in 'theta star calculation' -> 'relation'")
+            raise ValueError("Currently only Adams+18 and Red Clump accepted in 'theta star calculation' -> 'relation'")
 
         return theta_star_flux
 
@@ -3095,11 +3095,9 @@ class UlensModelFit(object):
         I_RC_0 = self._get_magnitude_RC_0()
         source = self._get_mag_from_fluxes()[1]
         theta_RC = 6.0  # micro arcsecond at 8.3 kpc
-
-        delta_mag = source - I_RC_0 + self._model_parameters['theta star calculation'][self._extinction_label]
-        F_source_F_RC = mm.Utils.get_flux_from_mag(delta_mag)
+        delta_mag = source - I_RC_0 - self._model_parameters['theta star calculation'][self._extinction_label]
+        F_source_F_RC =  10 **(-delta_mag/2.5)
         theta_star = np.sqrt(F_source_F_RC)*theta_RC
-
         return theta_star*0.001
 
     def _get_magnitude_RC_0(self):
