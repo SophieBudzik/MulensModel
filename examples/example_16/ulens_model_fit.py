@@ -3076,7 +3076,7 @@ class UlensModelFit(object):
         equations 2 and 3 from Adams et al. 2018.
         """
         PQ_0_S = self._get_color_BB88()
-        Q_0_S = self._get_mag_from_fluxes()[1] - PQ_0_S
+        Q_0_S = self._get_S_0()[1] - PQ_0_S
         logtheta_LD = self._get_theta_LD_Adams18(PQ_0_S) - 0.2*Q_0_S
         theta_star = 1/2 * 10**logtheta_LD
         return theta_star
@@ -3088,7 +3088,7 @@ class UlensModelFit(object):
         """
         I_RC_0 = self._get_magnitude_RC_0()
         source = 19.366038  # function to calculate
-        theta_RC = 6.5  # micro arcsecond
+        theta_RC = 6.0  # micro arcsecond at 8.3 kpc
 
         delta_mag = source - I_RC_0 + self._model_parameters['theta star calculation'][self._extinction_label]
         F_source_F_RC = mm.Utils.get_flux_from_mag(delta_mag)
@@ -3117,13 +3117,21 @@ class UlensModelFit(object):
         fluxes = self._get_fluxes()
         no_dataset_1 = self._get_no_of_dataset(self._dataset1)
         no_dataset_2 = self._get_no_of_dataset(self._dataset2)
-        reddening = self._model_parameters['theta star calculation'][self._reddening_label]
-        extinction = self._model_parameters['theta star calculation'][self._extinction_label]
         # to include binary sources correct the 2 lines below
         flux1 = fluxes[2 * no_dataset_1]
         flux2 = fluxes[2 * no_dataset_2]
         mag1_S = mm.Utils.get_mag_from_flux(flux1)
         mag2_S = mm.Utils.get_mag_from_flux(flux2)
+        return mag1_S, mag2_S
+
+    def _get_S_0(self):
+        """
+        Corrects the magnitude and color of the source for extinction
+        """
+        reddening = self._model_parameters['theta star calculation'][self._reddening_label]
+        extinction = self._model_parameters['theta star calculation'][self._extinction_label]
+        mag1_S = self._get_mag_from_fluxes()[0]
+        mag2_S = self._get_mag_from_fluxes()[1]
         color_S_0 = mag1_S - mag2_S - reddening
         mag1_S_0 = color_S_0 + mag2_S - extinction
         return color_S_0, mag1_S_0
@@ -3137,7 +3145,7 @@ class UlensModelFit(object):
                                         1.5, 1.63, 1.78, 1.9, 2.05, 2.25, 2.55, 3.05],
                                 'V-K': [1.75, 2.05, 2.15, 2.16, 2.31, 2.5, 2.7, 3.0, 3.26,
                                         3.6, 3.85, 4.05, 4.3, 4.64, 5.1, 5.96]}}
-        color_in = self._get_mag_from_fluxes()[0]
+        color_in = self._get_S_0()[0]
         ref_stars = colors_BB[self._ref_stars]
         ref_stars_and_ref_color = ref_stars[self._ref_color]
         ref_stars_and_base_color = ref_stars[self._base_color]
