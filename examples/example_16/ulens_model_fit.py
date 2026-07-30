@@ -2917,8 +2917,8 @@ class UlensModelFit(object):
         if self._extra_parameters is not None:
             for par in self._extra_parameters:
                 if par == 'theta_E':
-                    #extras.append(self._get_theta_E())
-                    extras.append(self._get_theta_star_from_flux()/ self._model.parameters.rho)
+                    extras.append(self._get_theta_E())
+                    #extras.append(self._get_theta_star_from_flux()/ self._model.parameters.rho)
                 elif par == 'lens_mass':
                     extras.append(self._get_lens_mass())
                 else:
@@ -3116,7 +3116,7 @@ class UlensModelFit(object):
         to the radius of the star from the Red Clump.
         """
         I_RC_0 = self._get_magnitude_RC_0()
-        source = self._RC_get_mag(self._dataset1)
+        source = self._get_mag_from_fluxes(self._dataset1)
         theta_RC = 6.0  # micro arcsecond at 8.3 kpc
         delta_mag = source - I_RC_0 - self._model_parameters['theta star calculation'][self._extinction_label]
         F_source_F_RC = 10**(-delta_mag/2.5)
@@ -3136,25 +3136,10 @@ class UlensModelFit(object):
         I_RC_0_event = np.interp(l_event, l_Nataf, I_RC_0_Nataf)
         return I_RC_0_event
 
-    def _get_mag_from_fluxes(self):
+    def _get_mag_from_fluxes(self, data_set):
         """
-        Calculates magnitude of the source in 2 bands
-        and corrects them for extinction.
-        """
-        fluxes = self._get_fluxes()
-        no_dataset_1 = self._get_no_of_dataset(self._dataset1)
-        no_dataset_2 = self._get_no_of_dataset(self._dataset2)
-        # to include binary sources correct the 2 lines below
-        flux1 = fluxes[2 * no_dataset_1]
-        flux2 = fluxes[2 * no_dataset_2]
-        mag1_S = mm.Utils.get_mag_from_flux(flux1)
-        mag2_S = mm.Utils.get_mag_from_flux(flux2)
-        return mag1_S, mag2_S
-
-    def _RC_get_mag(self, data_set):
-        """
-        Calculates magnitude of the source in 2 bands
-        and corrects them for extinction.
+        Calculates magnitude of the source for the
+        provided dataset.
         """
         fluxes = self._get_fluxes()
         no_dataset = self._get_no_of_dataset(data_set)
@@ -3163,15 +3148,14 @@ class UlensModelFit(object):
         mag = mm.Utils.get_mag_from_flux(flux)
         return mag
 
-
     def _get_S_0(self):
         """
         Corrects the magnitude and color of the source for extinction
         """
         reddening = self._model_parameters['theta star calculation'][self._reddening_label]
         extinction = self._model_parameters['theta star calculation'][self._extinction_label]
-        mag1_S = self._get_mag_from_fluxes()[0]
-        mag2_S = self._get_mag_from_fluxes()[1]
+        mag1_S = self._get_mag_from_fluxes(self._dataset1)
+        mag2_S = self._get_mag_from_fluxes(self._dataset2)
         color_S_0 = mag1_S - mag2_S - reddening
         mag1_S_0 = color_S_0 + mag2_S - extinction
         return color_S_0, mag1_S_0
