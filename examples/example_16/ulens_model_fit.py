@@ -1159,9 +1159,31 @@ class UlensModelFit(object):
         """
         Check values of self._model_parameters['theta star calculation'] and parse that information; set defaults
         """
-        self._get_bands_for_theta_star_calculation()
+        if self._model_parameters['theta star calculation']['relation'] == 'Red Clump':
+            self._check_and_parse_theta_star_RC()
+        else:
+            self._get_bands_for_theta_star_calculation()
+            self._check_theta_star_parameters()
+            self._set_theta_star_defaults()
+
+    def _check_and_parse_theta_star_RC(self):
+        if 'coords' not in self._model_parameters:
+            raise ValueError("Theta star calculation relation = Red Clump requires model['coords'].")
+
+        extinction = []
+        for key, value in self._model_parameters['theta star calculation'].items():
+            if key[0] == 'A':
+                extinction.append(key)
+        self._base_filter = extinction[0][2]
+        self._theta_star_required_keys = {extinction[0]}
+        self._extinction_label = "A_{:}".format(self._base_filter)
+        self._label_1 = self._get_label_format_for_theta_star_calculation(self._base_filter)
+        self._dataset1 = self._model_parameters['theta star calculation'][self._label_1]
+        keys = ["relation", self._label_1]
+        self._theta_star_required_keys.update(keys)
         self._check_theta_star_parameters()
-        self._set_theta_star_defaults()
+        self._model_parameters['theta star calculation']['relative sigma'] = 0.05
+        self._required_labels = [self._label_1]
 
     def _set_theta_star_defaults(self):
         """
@@ -1187,20 +1209,21 @@ class UlensModelFit(object):
                 "Wrong 'theta star calculation' keys: " + str(self._model_parameters['theta star calculation']))
 
         if reddening[0][:2] != "E(" or reddening[0][-1] != ")":
-            raise ValueError("Wrong format of extinction: " + str(reddening[0]))
+            raise ValueError("Wrong format of reddening: " + str(reddening[0]))
         self._reddening_label = reddening[0]
         self._theta_star_required_keys = {reddening[0]}
         self._base_color = reddening[0][2:-1]
 
         bands = self._base_color.split("-")
         if len(bands) != 2:
-            raise ValueError("Wrong format of extinction: " + str(reddening[0]))
+            raise ValueError("Wrong format of reddening: " + str(reddening[0]))
 
         self._label_1 = self._get_label_format_for_theta_star_calculation(bands[0])
         self._dataset1 = self._model_parameters['theta star calculation'][self._label_1]
         self._label_2 = self._get_label_format_for_theta_star_calculation(bands[1])
         self._dataset2 = self._model_parameters['theta star calculation'][self._label_2]
         self._get_required_theta_star_calculation_keys(bands)
+        self._required_labels = [self._label_1, self._label_2]
 
     def _get_required_theta_star_calculation_keys(self, bands):
         self._extinction_label = "A_{:}".format(bands[1])
@@ -1498,13 +1521,10 @@ class UlensModelFit(object):
         """
         Checks the values in the theta star calculation dict
         """
-        for key in [self._label_1, self._label_2]:
+        for key in self._required_labels:
             value = self._model_parameters['theta star calculation'][key]
             if value not in self._data_labels:
                 raise KeyError("No dataset of this name: {:}".format(value))
-        if self._model_parameters['theta star calculation']['relation'] == 'Red Clump':
-            if 'coords' not in self._model_parameters:
-                raise ValueError("Theta star calculation relation = Red Clump requires model['coords'].")
 
     def _check_ulens_model_parameters(self):
         """
@@ -2897,7 +2917,8 @@ class UlensModelFit(object):
         if self._extra_parameters is not None:
             for par in self._extra_parameters:
                 if par == 'theta_E':
-                    extras.append(self._get_theta_E())
+                    #extras.append(self._get_theta_E())
+                    extras.append(self._get_theta_star_from_flux()/ self._model.parameters.rho)
                 elif par == 'lens_mass':
                     extras.append(self._get_lens_mass())
                 else:
@@ -3095,7 +3116,7 @@ class UlensModelFit(object):
         to the radius of the star from the Red Clump.
         """
         I_RC_0 = self._get_magnitude_RC_0()
-        source = self._get_mag_from_fluxes()[1]
+        source = self._RC_get_mag(self._dataset1)
         theta_RC = 6.0  # micro arcsecond at 8.3 kpc
         delta_mag = source - I_RC_0 - self._model_parameters['theta star calculation'][self._extinction_label]
         F_source_F_RC = 10**(-delta_mag/2.5)
@@ -3129,6 +3150,19 @@ class UlensModelFit(object):
         mag1_S = mm.Utils.get_mag_from_flux(flux1)
         mag2_S = mm.Utils.get_mag_from_flux(flux2)
         return mag1_S, mag2_S
+
+    def _RC_get_mag(self, data_set):
+        """
+        Calculates magnitude of the source in 2 bands
+        and corrects them for extinction.
+        """
+        fluxes = self._get_fluxes()
+        no_dataset = self._get_no_of_dataset(data_set)
+        # to include binary sources correct the line below
+        flux = fluxes[2 * no_dataset]
+        mag = mm.Utils.get_mag_from_flux(flux)
+        return mag
+
 
     def _get_S_0(self):
         """

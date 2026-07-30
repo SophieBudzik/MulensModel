@@ -16,8 +16,8 @@ model:
     theta star calculation:
         relation: Red Clump 
         A_I: 1.205
-        E(V-I): 0.943
-        mag V label: phot_ob120838_OGLE_V.dat
+        #E(V-I): 0.943
+        #mag V label: phot_ob120838_OGLE_V.dat
         mag I label: phot_ob120838_OGLE_I.dat 
 min_values:
     u_0: 0.
