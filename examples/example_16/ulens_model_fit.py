@@ -2918,7 +2918,7 @@ class UlensModelFit(object):
             for par in self._extra_parameters:
                 if par == 'theta_E':
                     extras.append(self._get_theta_E())
-                    #extras.append(self._get_theta_star_from_flux()/ self._model.parameters.rho)
+                    # extras.append(self._get_theta_star_from_flux()/ self._model.parameters.rho)
                 elif par == 'lens_mass':
                     extras.append(self._get_lens_mass())
                 else:
