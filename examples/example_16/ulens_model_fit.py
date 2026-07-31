@@ -1174,7 +1174,7 @@ class UlensModelFit(object):
         for key, value in self._model_parameters['theta star calculation'].items():
             if key[0] == 'A':
                 extinction.append(key)
-        self._base_filter = extinction[0][2]
+        self._base_filter = extinction[0][2:]
         self._theta_star_required_keys = {extinction[0]}
         self._extinction_label = "A_{:}".format(self._base_filter)
         self._label_1 = self._get_label_format_for_theta_star_calculation(self._base_filter)
