@@ -14,8 +14,10 @@ model:
     default method: VBBL
     coords: 18:04:45.71 -26:59:15.2
     theta star calculation:
-        relation: Red Clump
+        relation: Adams+18
         A_I: 1.205
+        E(V-I): 0.943
+        mag V label: phot_ob120838_OGLE_V.dat
         mag I label: phot_ob120838_OGLE_I.dat 
 min_values:
     u_0: 0.
