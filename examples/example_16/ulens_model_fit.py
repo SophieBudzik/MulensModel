@@ -3176,7 +3176,7 @@ class UlensModelFit(object):
         if color_in < ref_stars_and_base_color[0] or color_in > ref_stars_and_base_color[-1]:
             if not self._BB88_warn:
                 msg = ("Input value of color: {:} out of bounds, the output color: {:} will default "
-                       "to the first or last value from table 3"
+                       "to the first or last value from table 3 "
                        "Bessell and Brett 1988".format(self._base_color, self._ref_color))
                 warnings.warn(msg)
                 self._BB88_warn = True
