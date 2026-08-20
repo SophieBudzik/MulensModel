@@ -2922,10 +2922,11 @@ class UlensModelFit(object):
         """
         extras = []
         if self._extra_parameters is not None:
-            try:
-                extras.append(getattr(self._model.parameters, par))
-            except Exception:
-                raise AttributeError("Wrong parameter name in extra parameters: {:}".format(par))
+            for par in self._extra_parameters:
+                try:
+                    extras.append(getattr(self._model.parameters, par))
+                except Exception:
+                    raise AttributeError("Wrong parameter name in extra parameters: {:}".format(par))
 
         return extras
 
