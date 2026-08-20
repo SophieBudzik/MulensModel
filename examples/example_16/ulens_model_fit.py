@@ -1167,6 +1167,10 @@ class UlensModelFit(object):
             self._set_theta_star_defaults()
 
     def _check_and_parse_theta_star_RC(self):
+        """
+        Check keys in self._model_parameters['theta star calculation']
+        for ['relation']: Red Clump and parse that information;
+        """
         if 'coords' not in self._model_parameters:
             raise ValueError("Theta star calculation relation = Red Clump requires model['coords'].")
 
