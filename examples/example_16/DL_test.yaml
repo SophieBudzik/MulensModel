@@ -25,7 +25,7 @@ starting_parameters:
     ds_dt: gauss -4.134101952057878 0.00001
     dalpha_dt: gauss -19.894306530866476 0.00001
     ds_z_dt: gauss 3.4508598443318808 0.00001
-    D_L: gauss 3. 0.1
+    D_L: gauss 4. 0.1
 min_values:
     t_0: 2455746.104714325
     u_0: -1.0
@@ -34,7 +34,8 @@ min_values:
     q: 0.0
     s: 0.0
     alpha: -20.
-    #D_S: 7
+    D_L: 0.
+    #D_S: 0.
 max_values:
     t_0: 2455776.104714325
     u_0: 1.0
@@ -43,11 +44,12 @@ max_values:
     q: 5.0
     s: 4.0
     alpha: 400.
-    #D_S: 10
+    D_L: 12.
+    #D_S: 12.
 fit_constraints:
     prior:
         D_S: gauss 8.5 1
-        compare theta star: True
+        #compare theta star: True
 fitting_parameters:
     n_walkers: 40
     n_steps: 20

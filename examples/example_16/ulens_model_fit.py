@@ -1958,10 +1958,13 @@ class UlensModelFit(object):
 
         for (key, value) in limits.items():
             if key not in self._fit_parameters:
-                fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting: {:}'
-                raise ValueError(fmt.format(key, self._fit_parameters))
-
-            index = self._fit_parameters.index(key)
+                if key not in self._extra_parameters:
+                    fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting: {:}'
+                    raise ValueError(fmt.format(key, self._fit_parameters))
+            if key in self._extra_parameters:
+                index = self._extra_parameters.index(key)
+            else:
+                index = self._fit_parameters.index(key)
             out[index] = value
 
         return out
@@ -2997,6 +3000,19 @@ class UlensModelFit(object):
             self._event.datasets[index] = self._datasets_initial[index].copy()
             self._event.datasets[index].scale_errorbars(**kwargs)
 
+    def _extra_params_prior(self, theta):
+        self._set_model_parameters(theta)
+        inside = 0.
+        outside = -np.inf
+
+        if self._add_source_distance() < self._min_values['D_S']:
+            return outside
+        elif self._add_source_distance() > self._max_values['D_S']:
+            return outside
+        else:
+            return inside
+
+
     def _ln_prior(self, theta):
         """
         Check if fitting parameters are within the prior.
@@ -3011,6 +3027,7 @@ class UlensModelFit(object):
         outside = -np.inf
 
         if self._fit_method == "EMCEE":
+            #self._extra_params_prior(theta)
             for (index, limit) in self._min_values_indexed.items():
                 if theta[index] < limit:
                     return outside
@@ -3072,12 +3089,6 @@ class UlensModelFit(object):
             sigma = settings[2]
             diff = value - settings[1]
             return -0.5*(diff/sigma)**2 - math.log(math.sqrt(2*np.pi)*sigma)
-        elif settings[0] == 'uniform':
-            if value > settings[1] and value < settings[2]:
-                return 0
-            else:
-                return -np.inf
-
         else:
             raise ValueError('Case not handelded yet: ' + settings[0])
 
@@ -3253,22 +3264,9 @@ class UlensModelFit(object):
         Calculates the lens mass from third Kepler law,
         parallax and theta_E
         """
-        period = self._model.parameters.lens_period
         pi_E = self._model.parameters.pi_E_mag
-        a = self._model.parameters.lens_semimajor_axis
-        D_L = self._get_lens_distance()
-        mass = period/((self._kappa*pi_E*a*D_L)**(3/2))
+        mass = self._get_theta_E()/(self._kappa*pi_E)
         return mass
-
-    def _get_lens_distance(self):
-        """
-        Calculates the lens distance assuming D_S=8kpc.
-        """
-        theta_E = self._add_theta_E()
-        pi_S = 1/
-        pi_E = getattr(self._model.parameters, 'pi_E_mag')
-        D_L = 1/(theta_E*pi_E + pi_S)
-        return D_L
 
     def _add_source_distance(self):
         """
