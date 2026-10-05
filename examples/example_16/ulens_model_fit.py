@@ -2005,8 +2005,6 @@ class UlensModelFit(object):
         """
         self._prior_t_E = None
         self._prior_theta_star = None
-        self._prior_pi_S = None
-        self._prior_source_distance = None
         self._priors = None
 
         if self._fit_constraints is None:
@@ -2316,7 +2314,7 @@ class UlensModelFit(object):
                 else:
                     raise ValueError("Unrecognized t_E prior: " + value)
                 self._read_prior_t_E_data()
-            elif key in ['pi_E_E', 'pi_E_N', 'D_S', 'pi_S']:
+            elif key in ['pi_E_E', 'pi_E_N', 'D_S']:
                 words = value.split()
                 if len(words) != 3 or words[0] not in ['gauss', 'uniform']:
                     msg = "Something went wrong in parsing prior for "
@@ -2329,9 +2327,6 @@ class UlensModelFit(object):
                                      words[2])
                 if settings[2] < 0.:
                     raise ValueError('sigma cannot be negative: ' + words[2])
-                if words[0] == 'uniform':
-                    if settings[1] > settings[2]:
-                        raise ValueError('For uniform distribution a<b, a={:} b={:} '.format(settings[1], settings[2]))
                 priors[key] = settings
             elif key == 'compare theta star':
                 if value is True:
@@ -3052,10 +3047,6 @@ class UlensModelFit(object):
                     value = self._add_source_distance()
                     ln_prior += self._get_ln_prior_for_1_parameter(
                         value, prior_settings)
-                elif parameter == 'pi_S':
-                    value = self._get_source_parallax()
-                    ln_prior += self._get_ln_prior_for_1_parameter(
-                        value, prior_settings)
 
                 else:
                     raise ValueError('prior not handled: ' + parameter)
@@ -3274,7 +3265,7 @@ class UlensModelFit(object):
         Calculates the lens distance assuming D_S=8kpc.
         """
         theta_E = self._add_theta_E()
-        pi_S = 1/8
+        pi_S = 1/
         pi_E = getattr(self._model.parameters, 'pi_E_mag')
         D_L = 1/(theta_E*pi_E + pi_S)
         return D_L

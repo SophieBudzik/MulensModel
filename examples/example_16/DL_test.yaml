@@ -34,6 +34,7 @@ min_values:
     q: 0.0
     s: 0.0
     alpha: -20.
+    #D_S: 7
 max_values:
     t_0: 2455776.104714325
     u_0: 1.0
@@ -42,10 +43,10 @@ max_values:
     q: 5.0
     s: 4.0
     alpha: 400.
+    #D_S: 10
 fit_constraints:
     prior:
         D_S: gauss 8.5 1
-        pi_S: uniform 0.1 0.14
         compare theta star: True
 fitting_parameters:
     n_walkers: 40
