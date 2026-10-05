@@ -1,8 +1,7 @@
 import sys
 import yaml
-import numpy as np
-
 from ulens_model_fit import UlensModelFit
+
 
 class MyUlensModelFit(UlensModelFit):
     """
@@ -13,9 +12,9 @@ class MyUlensModelFit(UlensModelFit):
         self._latex_conversion_other = {'D_L': 'D_{L}'}
         self._check_if_DS_in_extras()
 
-
     def _get_ln_probability_for_other_parameters(self):
         return -0.5
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:

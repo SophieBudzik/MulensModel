@@ -3116,7 +3116,7 @@ class UlensModelFit(object):
             if self._prior_t_E == 'Mroz+20':
                 out += 3. * math.log(10) * (x - self._prior_t_E_data['x_min'])
             return out
-    
+
     def _ln_prior_theta_star(self):
         """
         Get log prior for theta_star of current model. This function is executed
@@ -3290,15 +3290,13 @@ class UlensModelFit(object):
         Calculates the source parallax from fitted D_L,
         keplerian motion parallax.
         """
-        self._kappa = 8.14385328 # [mas/M_sun]
-        
+        self._kappa = 8.14385328#  [mas/M_sun]
         D_L = self._other_parameters_dict["D_L"]
         period = self._model.parameters.lens_period
         pi_E = self._model.parameters.pi_E_mag
         a = self._model.parameters.lens_semimajor_axis
-        pi_S = 1/D_L - np.sqrt((pi_E* period**2)/(self._kappa * (D_L*a)**3))
+        pi_S = 1/D_L - np.sqrt((pi_E * period**2)/(self._kappa * (D_L*a)**3))
         return pi_S
-
 
     def _add_theta_E(self):
         """
@@ -3313,7 +3311,7 @@ class UlensModelFit(object):
         """
         Calculates lens mass if possible.
         """
-        self._kappa = 8.14385328 # [mas/M_sun]
+        self._kappa = 8.14385328 #  [mas/M_sun]
         try:
             theta_E = self._add_theta_E()
         except Exception:
