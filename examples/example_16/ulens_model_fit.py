@@ -2323,7 +2323,7 @@ class UlensModelFit(object):
                 self._read_prior_t_E_data()
             elif key in ['pi_E_E', 'pi_E_N', 'D_S']:
                 words = value.split()
-                if len(words) != 3 or words[0] not in ['gauss', 'uniform']:
+                if len(words) != 3 or words[0] != 'gauss':
                     msg = "Something went wrong in parsing prior for "
                     msg += "{:}: {:}"
                     raise ValueError(msg.format(key, value))
@@ -3254,8 +3254,8 @@ class UlensModelFit(object):
         period = self._model.parameters.lens_period
         pi_E = self._model.parameters.pi_E_mag
         a = self._model.parameters.lens_semimajor_axis
-        DL = self._other_parameters_dict["D_L"]
-        theta_E = period/((self._kappa*pi_E)**(1/2) * (a*DL)**(3/2))
+        D_L = self._other_parameters_dict["D_L"]
+        theta_E = period/((self._kappa*pi_E)**(1/2) * (a*D_L)**(3/2))
         return theta_E
 
     def _get_lens_mass(self):
@@ -3292,6 +3292,7 @@ class UlensModelFit(object):
         if 'theta star calculation' not in self._model_parameters:
             raise KeyError("Insufficient number of parameters to add theta_E.")
         theta_E = self._get_theta_star_from_flux() / self._model.parameters.rho
+        ### if compare theta star = True to theta_E == self._get_theta_E ??? 
         return theta_E
 
     def _add_lens_mass(self):
