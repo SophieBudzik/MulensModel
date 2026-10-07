@@ -161,7 +161,8 @@ class UlensModelFit(object):
             Additional parameters you want to a add to the final output,
             triangle plot, trace plot, and posterior. They are not fitted themselves
             but calculated from the fitted parameters. Currently accepted values are:
-            ``lens_semimajor_axis``, ``lens_period``, ``lens_eccentricity``, and ``lens_inclination``.
+            ``lens_semimajor_axis``, ``lens_period``, ``lens_eccentricity``, ``lens_inclination``
+            ``theta_E`` and ``lens_mass``.
             Works only for EMCEE fitting.
 
         model: *dict*
@@ -3320,7 +3321,7 @@ class UlensModelFit(object):
 
     def _get_ln_normal(self, x, sigma, mu):
         """
-        Normal distribution with mu=0.
+        Normal distribution.
         """
         out = np.log(1/(np.sqrt(2 * np.pi * sigma**2))) - ((x-mu)**2 / (2 * sigma**2))
         return out
