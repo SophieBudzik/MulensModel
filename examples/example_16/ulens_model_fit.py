@@ -1945,29 +1945,33 @@ class UlensModelFit(object):
                            "is larger than the upper limit: {:} vs {:}")
                     raise ValueError(fmt.format(key, self._min_values[key], self._max_values[key]))
 
-        self._min_values_indexed = self._parse_min_max_values_single(self._min_values)
-        self._max_values_indexed = self._parse_min_max_values_single(self._max_values)
+        self._min_values_indexed,self._min_values_indexed_extra  = self._parse_min_max_values_single(self._min_values)
+        self._max_values_indexed,self._max_values_indexed_extra = self._parse_min_max_values_single(self._max_values)
 
     def _parse_min_max_values_single(self, limits):
         """
         change dict that has str as key to index as key
         """
         out = dict()
+        out_extra = dict()
+        self._limits_on_extra_parameters = False
         if len(limits) == 0:
             return out
 
         for (key, value) in limits.items():
             if key not in self._fit_parameters:
                 if key not in self._extra_parameters:
-                    fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting: {:}'
-                    raise ValueError(fmt.format(key, self._fit_parameters))
+                    fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting or in extra: {:}'
+                    raise ValueError(fmt.format(key, self._fit_parameters+self._extra_parameters))
             if key in self._extra_parameters:
+                self._limits_on_extra_parameters = True
                 index = self._extra_parameters.index(key)
+                out_extra[index] = value
             else:
                 index = self._fit_parameters.index(key)
-            out[index] = value
+                out[index] = value
 
-        return out
+        return out, out_extra
 
     def _set_prior_limits_MultiNest(self):
         """
@@ -3000,19 +3004,6 @@ class UlensModelFit(object):
             self._event.datasets[index] = self._datasets_initial[index].copy()
             self._event.datasets[index].scale_errorbars(**kwargs)
 
-    def _extra_params_prior(self, theta):
-        self._set_model_parameters(theta)
-        inside = 0.
-        outside = -np.inf
-
-        if self._add_source_distance() < self._min_values['D_S']:
-            return outside
-        elif self._add_source_distance() > self._max_values['D_S']:
-            return outside
-        else:
-            return inside
-
-
     def _ln_prior(self, theta):
         """
         Check if fitting parameters are within the prior.
@@ -3027,7 +3018,16 @@ class UlensModelFit(object):
         outside = -np.inf
 
         if self._fit_method == "EMCEE":
-            #self._extra_params_prior(theta)
+            if self._limits_on_extra_parameters:
+                self._set_model_parameters(theta)
+                extras = self._get_extras()
+                for (index, limit) in self._min_values_indexed_extra.items():
+                    if extras[index] < limit:
+                        return outside
+                for (index, limit) in self._max_values_indexed_extra.items():
+                    if extras[index] > limit:
+                        return outside
+
             for (index, limit) in self._min_values_indexed.items():
                 if theta[index] < limit:
                     return outside

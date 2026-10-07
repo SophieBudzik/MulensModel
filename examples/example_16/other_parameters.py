@@ -13,7 +13,7 @@ class MyUlensModelFit(UlensModelFit):
         self._check_if_DS_in_extras()
 
     def _get_ln_probability_for_other_parameters(self):
-        return -0.5
+        return 0.0
 
 
 if __name__ == '__main__':

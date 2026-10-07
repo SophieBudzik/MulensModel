@@ -10,7 +10,7 @@ model:
         mag I label: phot_ogle.dat
 extra_parameters: 
     - 'theta_E'
-    - 'lens_mass'
+      #- 'lens_mass'
     - 'D_S'
 starting_parameters:
     t_0: gauss 2455761.104714325 0.00001
@@ -35,7 +35,7 @@ min_values:
     s: 0.0
     alpha: -20.
     D_L: 0.
-    #D_S: 0.
+    D_S: 0.
 max_values:
     t_0: 2455776.104714325
     u_0: 1.0
@@ -45,10 +45,10 @@ max_values:
     s: 4.0
     alpha: 400.
     D_L: 12.
-    #D_S: 12.
-fit_constraints:
-    prior:
-        D_S: gauss 8.5 1
+    D_S: 12.
+    #fit_constraints:
+    #prior:
+            #D_S: gauss 8.5 1
         #compare theta star: True
 fitting_parameters:
     n_walkers: 40
