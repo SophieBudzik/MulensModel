@@ -3016,7 +3016,7 @@ class UlensModelFit(object):
         """
         inside = 0.
         outside = -np.inf
-
+        self._kappa = 8.14385328
         if self._fit_method == "EMCEE":
             if self._limits_on_extra_parameters:
                 self._set_model_parameters(theta)
@@ -3251,7 +3251,6 @@ class UlensModelFit(object):
         """
         Calculates theta_E from third Kepler law.
         """
-        self._kappa = 8.14385328
         period = self._model.parameters.lens_period
         pi_E = self._model.parameters.pi_E_mag
         a = self._model.parameters.lens_semimajor_axis
@@ -3279,7 +3278,6 @@ class UlensModelFit(object):
         Calculates the source parallax from fitted D_L,
         keplerian motion parallax.
         """
-        self._kappa = 8.14385328#  [mas/M_sun]
         D_L = self._other_parameters_dict["D_L"]
         period = self._model.parameters.lens_period
         pi_E = self._model.parameters.pi_E_mag
@@ -3300,7 +3298,6 @@ class UlensModelFit(object):
         """
         Calculates lens mass if possible.
         """
-        self._kappa = 8.14385328 #  [mas/M_sun]
         try:
             theta_E = self._add_theta_E()
         except Exception:
