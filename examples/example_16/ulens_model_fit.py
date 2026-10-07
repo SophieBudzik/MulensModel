@@ -1945,8 +1945,8 @@ class UlensModelFit(object):
                            "is larger than the upper limit: {:} vs {:}")
                     raise ValueError(fmt.format(key, self._min_values[key], self._max_values[key]))
 
-        self._min_values_indexed,self._min_values_indexed_extra  = self._parse_min_max_values_single(self._min_values)
-        self._max_values_indexed,self._max_values_indexed_extra = self._parse_min_max_values_single(self._max_values)
+        self._min_values_indexed, self._min_values_indexed_extra = self._parse_min_max_values_single(self._min_values)
+        self._max_values_indexed, self._max_values_indexed_extra = self._parse_min_max_values_single(self._max_values)
 
     def _parse_min_max_values_single(self, limits):
         """
@@ -3292,7 +3292,7 @@ class UlensModelFit(object):
         if 'theta star calculation' not in self._model_parameters:
             raise KeyError("Insufficient number of parameters to add theta_E.")
         theta_E = self._get_theta_star_from_flux() / self._model.parameters.rho
-        ### if compare theta star = True to theta_E == self._get_theta_E ??? 
+        # if compare theta star = True to theta_E == self._get_theta_E ??
         return theta_E
 
     def _add_lens_mass(self):

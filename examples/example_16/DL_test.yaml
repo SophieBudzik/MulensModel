@@ -4,13 +4,13 @@ photometry_files:
 model:
     default method: VBBL
     coords: 17:56:46.73 -30:00:17.5
-    theta star calculation:
-        relation: Red Clump
-        A_I: 1.426
-        mag I label: phot_ogle.dat
+    #theta star calculation:
+    #    relation: Red Clump
+    #    A_I: 1.426
+    #    mag I label: phot_ogle.dat
 extra_parameters: 
-    - 'theta_E'
-    - 'lens_mass'
+#- 'theta_E'
+#    - 'lens_mass'
     - 'D_S'
 starting_parameters:
     t_0: gauss 2455761.104714325 0.00001
