@@ -461,7 +461,7 @@ class UlensModelFit(object):
     def __init__(
             self, photometry_files,
             starting_parameters=None, prior_limits=None, model=None,
-            fixed_parameters=None, extra_parameters=None,
+            fixed_parameters=None, extra_parameters=[],
             min_values=None, max_values=None, fitting_parameters=None,
             fit_constraints=None, plots=None, other_output=None,
             fit_method=None
@@ -1946,8 +1946,8 @@ class UlensModelFit(object):
                            "is larger than the upper limit: {:} vs {:}")
                     raise ValueError(fmt.format(key, self._min_values[key], self._max_values[key]))
 
-        self._min_values_indexed, self._min_values_indexed_extra = self._parse_min_max_values_single(self._min_values)
-        self._max_values_indexed, self._max_values_indexed_extra = self._parse_min_max_values_single(self._max_values)
+        self._min_values_indexed  = self._parse_min_max_values_single(self._min_values)
+        self._max_values_indexed  = self._parse_min_max_values_single(self._max_values)
 
     def _parse_min_max_values_single(self, limits):
         """
@@ -1972,7 +1972,7 @@ class UlensModelFit(object):
                 index = self._fit_parameters.index(key)
                 out[index] = value
 
-        return out, out_extra
+        return out#, out_extra
 
     def _set_prior_limits_MultiNest(self):
         """
@@ -3019,15 +3019,15 @@ class UlensModelFit(object):
         outside = -np.inf
         self._kappa = 8.14385328
         if self._fit_method == "EMCEE":
-            if self._limits_on_extra_parameters:
-                self._set_model_parameters(theta)
-                extras = self._get_extras()
-                for (index, limit) in self._min_values_indexed_extra.items():
-                    if extras[index] < limit:
-                        return outside
-                for (index, limit) in self._max_values_indexed_extra.items():
-                    if extras[index] > limit:
-                        return outside
+            #if self._limits_on_extra_parameters:
+            #    self._set_model_parameters(theta)
+            #    extras = self._get_extras()
+            #    for (index, limit) in self._min_values_indexed_extra.items():
+            #        if extras[index] < limit:
+            #            return outside
+            #    for (index, limit) in self._max_values_indexed_extra.items():
+            #        if extras[index] > limit:
+            #            return outside
 
             for (index, limit) in self._min_values_indexed.items():
                 if theta[index] < limit:
