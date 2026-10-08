@@ -461,7 +461,7 @@ class UlensModelFit(object):
     def __init__(
             self, photometry_files,
             starting_parameters=None, prior_limits=None, model=None,
-            fixed_parameters=None, extra_parameters=[],
+            fixed_parameters=None, extra_parameters=None,
             min_values=None, max_values=None, fitting_parameters=None,
             fit_constraints=None, plots=None, other_output=None,
             fit_method=None
@@ -1961,16 +1961,16 @@ class UlensModelFit(object):
 
         for (key, value) in limits.items():
             if key not in self._fit_parameters:
-                if key not in self._extra_parameters:
-                    fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting or in extra: {:}'
-                    raise ValueError(fmt.format(key, self._fit_parameters+self._extra_parameters))
-            if key in self._extra_parameters:
-                self._limits_on_extra_parameters = True
-                index = self._extra_parameters.index(key)
-                out_extra[index] = value
-            else:
-                index = self._fit_parameters.index(key)
-                out[index] = value
+                #if key not in self._extra_parameters:
+                fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting or in extra: {:}'
+                raise ValueError(fmt.format(key, self._fit_parameters+self._extra_parameters))
+            #if key in self._extra_parameters:
+            #    self._limits_on_extra_parameters = True
+            #    index = self._extra_parameters.index(key)
+            #    out_extra[index] = value
+            #else:
+            index = self._fit_parameters.index(key)
+            out[index] = value
 
         return out#, out_extra
 
