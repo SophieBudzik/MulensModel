@@ -1946,8 +1946,9 @@ class UlensModelFit(object):
                            "is larger than the upper limit: {:} vs {:}")
                     raise ValueError(fmt.format(key, self._min_values[key], self._max_values[key]))
 
-        self._min_values_indexed  = self._parse_min_max_values_single(self._min_values)
-        self._max_values_indexed  = self._parse_min_max_values_single(self._max_values)
+        self._min_values_indexed, self._min_values_indexed_extra  = self._parse_min_max_values_single(self._min_values)
+        self._max_values_indexed, self._max_values_indexed_extra  = self._parse_min_max_values_single(self._max_values)
+
 
     def _parse_min_max_values_single(self, limits):
         """
@@ -1957,22 +1958,23 @@ class UlensModelFit(object):
         out_extra = dict()
         self._limits_on_extra_parameters = False
         if len(limits) == 0:
-            return out
+            return out, out_extra
 
         for (key, value) in limits.items():
             if key not in self._fit_parameters:
-                #if key not in self._extra_parameters:
-                fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting or in extra: {:}'
-                raise ValueError(fmt.format(key, self._fit_parameters+self._extra_parameters))
-            #if key in self._extra_parameters:
-            #    self._limits_on_extra_parameters = True
-            #    index = self._extra_parameters.index(key)
-            #    out_extra[index] = value
-            #else:
-            index = self._fit_parameters.index(key)
-            out[index] = value
+                if self._extra_parameters is not None:
+                    if key not in self._extra_parameters:
+                        fmt = 'Key provided in limits: {:}\nis not one of the parameters for fitting or in extra: {:}{:}'
+                        raise ValueError(fmt.format(key, self._fit_parameters, self._extra_parameters))
+                    else:
+                        self._limits_on_extra_parameters = True
+                        index = self._extra_parameters.index(key)
+                        out_extra[index] = value
+            else:
+                index = self._fit_parameters.index(key)
+                out[index] = value
 
-        return out#, out_extra
+        return out, out_extra
 
     def _set_prior_limits_MultiNest(self):
         """
@@ -2399,6 +2401,8 @@ class UlensModelFit(object):
         """
         Checks if D_S is included in extra parameters if D_L is fitted.
         """
+        if self._extra_parameters is None:
+            raise ValueError("Add extra_parameters block.")
         if 'D_L' in self._other_parameters:
             if 'D_S' not in self._extra_parameters:
                 raise ValueError("Add D_S to extra parameters to check if the value is right.")
@@ -3019,15 +3023,15 @@ class UlensModelFit(object):
         outside = -np.inf
         self._kappa = 8.14385328
         if self._fit_method == "EMCEE":
-            #if self._limits_on_extra_parameters:
-            #    self._set_model_parameters(theta)
-            #    extras = self._get_extras()
-            #    for (index, limit) in self._min_values_indexed_extra.items():
-            #        if extras[index] < limit:
-            #            return outside
-            #    for (index, limit) in self._max_values_indexed_extra.items():
-            #        if extras[index] > limit:
-            #            return outside
+            if self._limits_on_extra_parameters:
+                self._set_model_parameters(theta)
+                extras = self._get_extras()
+                for (index, limit) in self._min_values_indexed_extra.items():
+                    if extras[index] < limit:
+                        return outside
+                for (index, limit) in self._max_values_indexed_extra.items():
+                    if extras[index] > limit:
+                        return outside
 
             for (index, limit) in self._min_values_indexed.items():
                 if theta[index] < limit:

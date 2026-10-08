@@ -45,7 +45,7 @@ max_values:
     s: 4.0
     alpha: 400.
     D_L: 12.
-    D_S: 12.
+    D_S: 5.
 fit_constraints:
     prior:
         D_S: gauss 8.5 1
