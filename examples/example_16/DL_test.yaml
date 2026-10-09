@@ -1,9 +1,9 @@
 photometry_files:
-    - {file_name: /home/data/ceres/zbudzik/events_for_rtmodel/MM/ob110975/phot_dat_MM_format/phot_ogle.dat, plot_properties: {color: slateblue}}
-    - {file_name: /home/data/ceres/zbudzik/events_for_rtmodel/MM/ob110975/phot_dat_MM_format/phot_moa.dat, phot_fmt: flux, plot_properties: {color: deeppink}}
+    - {file_name: phot_ogle.dat, plot_properties: {color: slateblue}}
+    - {file_name: phot_moa.dat, phot_fmt: flux, plot_properties: {color: deeppink}}
 model:
     default method: VBBL
-    coords: 17:56:46.73 -30:00:17.5
+    coords: 18:00:00 -29:00:17.5
     theta star calculation:
         relation: Red Clump
         A_I: 1.426
