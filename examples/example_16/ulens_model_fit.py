@@ -3311,13 +3311,14 @@ class UlensModelFit(object):
         """
         Calculates lens mass if possible.
         """
-        try:
-            theta_E = self._get_theta_E_from_theta_star()
-        except Exception:
-            raise KeyError("Insufficient number of parameters to add lens mass.")
+        #try:
+        #    theta_E = self._get_theta_E_from_theta_star()
+        #except Exception:
+        #    raise KeyError("Insufficient number of parameters to add lens mass.")
         if self._model.parameters.is_keplerian() and hasattr(self._model.parameters, 'pi_E_mag'):
             return self._get_lens_mass()
-        elif hasattr(self._model.parameters, 'pi_E_mag'):
+        elif hasattr(self._model.parameters, 'pi_E_mag') and 'theta star calculation' in self._model_parameters:
+            theta_E = self._get_theta_E_from_theta_star()
             pi_E = getattr(self._model.parameters, 'pi_E_mag')
             return theta_E/(self._kappa*pi_E)
         else:
